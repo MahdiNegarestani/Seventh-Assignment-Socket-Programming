@@ -24,6 +24,19 @@ public class Server {
         //       - Create a new ClientHandler object
         //       - Add it to the 'clients' list
         //       - Start a new thread to handle communication
+
+        try (ServerSocket serverSocket = new ServerSocket(12345)) {
+            while (true) {
+                System.out.println("Waiting for connection...");
+                Socket soucket = serverSocket.accept();
+                System.out.println("Accepted connection from " + soucket.getInetAddress().getHostAddress());
+                ClientHandler clientHandler = new ClientHandler(soucket, clients);
+                clients.add(clientHandler);
+                new Thread(clientHandler).start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean authenticate(String username, String password) {
